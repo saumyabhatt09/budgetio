@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0D0D0D">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="BudgetIO">
+<meta name="description" content="Personal monthly budget tracker with Google Sheets sync">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>BudgetIO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ── RESET & BASE ─────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#0D0D0D;
+  --surface:#161616;
+  --surface2:#1E1E1E;
+  --surface3:#252525;
+  --border:#2A2A2A;
+  --border2:#333;
+  --accent:#C8FF00;
+  --accent2:#A8D900;
+  --accent-dim:rgba(200,255,0,.12);
+  --red:#FF4D4D;
+  --red-dim:rgba(255,77,77,.12);
+  --green:#00E5A0;
+  --green-dim:rgba(0,229,160,.1);
+  --amber:#FFB020;
+  --amber-dim:rgba(255,176,32,.12);
+  --blue:#4D9FFF;
+  --t1:#F0F0F0;
+  --t2:#888;
+  --t3:#444;
+  --font:'DM Sans',system-ui,sans-serif;
+  --mono:'DM Mono',monospace;
+  --r:12px;
+  --r-sm:8px;
+  --safe-top:env(safe-area-inset-top,0px);
+  --safe-bottom:env(safe-area-inset-bottom,0px);
+}
+html{background:var(--bg);color:var(--t1);font-family:var(--font);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+body{min-height:100dvh;overflow-x:hidden}
+input,select,button,textarea{font-family:var(--font);font-size:15px}
+button{cursor:pointer;border:none;background:none;color:inherit}
+input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
+
+/* ── SCREENS ──────────────────────────────────────── */
+.screen{display:none;min-height:100dvh;flex-direction:column}
+.screen.active{display:flex}
+
+/* ── SETUP SCREEN ─────────────────────────────────── */
+#setup{background:var(--bg);padding:calc(var(--safe-top) + 48px) 24px calc(var(--safe-bottom) + 32px);justify-content:center}
+.setup-logo{font-size:28px;font-weight:600;letter-spacing:-1px;margin-bottom:6px}
+.setup-logo span{color:var(--accent)}
+.setup-tagline{color:var(--t2);font-size:14px;margin-bottom:40px}
+
+.setup-section{margin-bottom:28px}
+.setup-section-title{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--t2);font-weight:500;margin-bottom:14px}
+
+.step-row{display:flex;gap:14px;align-items:flex-start;margin-bottom:14px}
+.step-num{width:26px;height:26px;border-radius:50%;border:1px solid var(--accent);color:var(--accent);font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.step-body{font-size:13px;color:var(--t2);line-height:1.6}
+.step-body strong{color:var(--t1);font-weight:500}
+.code-pill{display:inline-block;background:var(--surface2);border:1px solid var(--border2);border-radius:6px;padding:2px 8px;font-family:var(--mono);font-size:11px;color:var(--accent);margin-top:4px}
+
+.field{margin-bottom:14px}
+.field label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--t2);font-weight:500;margin-bottom:8px}
+.field input{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--r-sm);padding:13px 14px;color:var(--t1);font-size:14px;outline:none;transition:border-color .15s}
+.field input:focus{border-color:var(--accent)}
+.field input::placeholder{color:var(--t3)}
+
+.btn-main{width:100%;background:var(--accent);color:#0D0D0D;border-radius:var(--r);padding:15px;font-size:15px;font-weight:600;letter-spacing:.2px;transition:opacity .15s,transform .1s;margin-bottom:12px}
+.btn-main:active{transform:scale(.98);opacity:.9}
+.btn-ghost{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--r);padding:14px;font-size:14px;color:var(--t2);transition:background .15s}
+.btn-ghost:active{background:var(--surface3)}
+
+/* ── MAIN APP SHELL ───────────────────────────────── */
+#app{background:var(--bg)}
+
+/* STATUS BAR */
+.status-strip{display:flex;align-items:center;gap:8px;padding:calc(var(--safe-top) + 12px) 20px 12px;background:var(--surface);border-bottom:1px solid var(--border)}
+.status-dot{width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0}
+.status-dot.syncing{background:var(--amber);animation:blink 1s infinite}
+.status-dot.err{background:var(--red)}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.status-text{font-size:12px;color:var(--t2);flex:1}
+.status-link{font-size:12px;color:var(--accent);font-weight:500;text-decoration:none}
+.disconnect-btn{font-size:12px;color:var(--t3);margin-left:8px}
+
+/* SCROLLABLE CONTENT */
+.scroll-content{flex:1;overflow-y:auto;padding:20px 20px calc(var(--safe-bottom) + 20px);-webkit-overflow-scrolling:touch}
+
+/* MONTH NAV */
+.month-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.month-title{font-size:22px;font-weight:600;letter-spacing:-0.5px}
+.month-title span{color:var(--accent)}
+.nav-arrows{display:flex;gap:8px}
+.nav-btn{width:38px;height:38px;border-radius:var(--r-sm);background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--t2);transition:background .1s}
+.nav-btn:active{background:var(--surface3)}
+
+/* KPI GRID */
+.kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+.kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px}
+.kpi-card.full{grid-column:1/-1}
+.kpi-label{font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--t2);font-weight:500;margin-bottom:8px}
+.kpi-value{font-size:22px;font-weight:600;letter-spacing:-0.5px;font-family:var(--mono)}
+.kpi-value.accent{color:var(--accent)}
+.kpi-value.green{color:var(--green)}
+.kpi-value.red{color:var(--red)}
+.kpi-value.amber{color:var(--amber)}
+.kpi-sub{font-size:11px;color:var(--t2);margin-top:4px}
+.prog{height:3px;background:var(--border);border-radius:3px;margin-top:12px;overflow:hidden}
+.prog-fill{height:100%;border-radius:3px;background:var(--green);transition:width .5s ease}
+.prog-fill.warn{background:var(--amber)}
+.prog-fill.over{background:var(--red)}
+
+/* SECTION HEADERS */
+.section-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.section-hd h2{font-size:13px;font-weight:500;color:var(--t2);text-transform:uppercase;letter-spacing:1px}
+.section-hd button{font-size:12px;color:var(--accent);font-weight:500}
+
+/* ADD FORM */
+.add-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:20px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.form-grid .full{grid-column:1/-1}
+.fi label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--t2);font-weight:500;margin-bottom:6px}
+.fi input,.fi select{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--r-sm);padding:11px 12px;color:var(--t1);font-size:14px;outline:none;-webkit-appearance:none;appearance:none;transition:border-color .15s}
+.fi input:focus,.fi select:focus{border-color:var(--accent)}
+.fi input::placeholder{color:var(--t3)}
+.fi select option{background:var(--surface)}
+.add-btn{width:100%;background:var(--accent);color:#0D0D0D;border-radius:var(--r-sm);padding:13px;font-size:14px;font-weight:600;margin-top:12px;transition:opacity .15s,transform .1s}
+.add-btn:active{transform:scale(.98);opacity:.88}
+.add-btn:disabled{opacity:.4}
+
+/* TRANSACTIONS */
+.txn-list{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:20px}
+.txn-row{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--border)}
+.txn-row:last-child{border-bottom:none}
+.txn-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.txn-body{flex:1;min-width:0}
+.txn-desc{font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.txn-meta{font-size:11px;color:var(--t2);margin-top:2px}
+.txn-right{text-align:right;flex-shrink:0}
+.txn-amt{font-size:15px;font-weight:600;color:var(--red);font-family:var(--mono)}
+.txn-del{font-size:20px;color:var(--t3);padding:4px 0 4px 8px;line-height:1;transition:color .1s}
+.txn-del:active{color:var(--red)}
+.empty-state{padding:36px 20px;text-align:center;color:var(--t3);font-size:13px}
+
+/* CATEGORY BARS */
+.cat-stack{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+.cat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px}
+.cat-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.cat-name{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500}
+.cat-swatch{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+.cat-nums{font-size:12px;font-family:var(--mono)}
+.cat-nums.over{color:var(--red);font-weight:600}
+.cat-prog{height:4px;background:var(--border);border-radius:4px;overflow:hidden}
+.cat-prog-fill{height:100%;border-radius:4px;transition:width .4s ease}
+
+/* SAVINGS PANEL */
+.savings-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:20px}
+.savings-row{display:flex;justify-content:space-between;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--border)}
+.savings-row:last-child{border-bottom:none}
+.savings-label{font-size:13px;color:var(--t2)}
+.savings-val{font-size:14px;font-weight:600;font-family:var(--mono)}
+.savings-val.pos{color:var(--green)}
+.savings-val.neg{color:var(--red)}
+.savings-val.accent{color:var(--accent)}
+
+/* SETTINGS */
+.settings-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:20px}
+.setting-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
+.setting-row:last-child{border-bottom:none}
+.setting-label{font-size:13px;color:var(--t2)}
+.setting-val{font-size:14px;font-weight:500}
+.setting-input{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--r-sm);padding:7px 10px;color:var(--t1);font-size:14px;width:120px;text-align:right;outline:none;font-family:var(--mono)}
+.setting-input:focus{border-color:var(--accent)}
+
+/* BOTTOM NAV */
+.bottom-nav{display:flex;background:var(--surface);border-top:1px solid var(--border);padding:8px 0 calc(var(--safe-bottom) + 8px)}
+.nav-tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 0;font-size:10px;font-weight:500;color:var(--t3);letter-spacing:.5px;text-transform:uppercase;transition:color .15s}
+.nav-tab.active{color:var(--accent)}
+.nav-tab svg{width:22px;height:22px}
+.tab-dot{width:4px;height:4px;border-radius:50%;background:var(--accent);opacity:0}
+.nav-tab.active .tab-dot{opacity:1}
+
+/* TAB PAGES */
+.tab-page{display:none}
+.tab-page.active{display:block}
+
+/* TOAST */
+.toast-wrap{position:fixed;bottom:calc(var(--safe-bottom) + 80px);left:50%;transform:translateX(-50%);z-index:999;pointer-events:none}
+.toast{background:#1A1A1A;border:1px solid var(--border2);border-radius:40px;padding:10px 20px;font-size:13px;font-weight:500;white-space:nowrap;opacity:0;transform:translateY(10px);transition:opacity .2s,transform .2s}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast.success{border-color:var(--green);color:var(--green)}
+.toast.error{border-color:var(--red);color:var(--red)}
+
+/* CHART BAR */
+.mini-chart{display:flex;align-items:flex-end;gap:6px;height:80px;margin-bottom:20px;padding:0 4px}
+.chart-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px}
+.chart-bar-wrap{flex:1;display:flex;align-items:flex-end;width:100%}
+.chart-bar{width:100%;border-radius:4px 4px 0 0;background:var(--accent-dim);border:1px solid rgba(200,255,0,.25);min-height:4px;transition:height .5s ease}
+.chart-bar.cur{background:rgba(200,255,0,.3);border-color:var(--accent)}
+.chart-lbl{font-size:9px;color:var(--t3);font-weight:500}
+
+/* ANIMATIONS */
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.screen.active{animation:slideUp .25s ease}
+</style>
+</head>
+<body>
+
+<!-- SETUP SCREEN -->
+<div id="setup" class="screen active">
+  <div class="setup-logo">Budget<span>IO</span></div>
+  <div class="setup-tagline">Personal finance, backed by Google Sheets</div>
+
+  <div class="setup-section">
+    <div class="setup-section-title">How to connect your sheet</div>
+    <div class="step-row">
+      <div class="step-num">1</div>
+      <div class="step-body">Go to <strong>sheets.google.com</strong> → create a blank spreadsheet, name it <strong>"Monthly Budget"</strong></div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">2</div>
+      <div class="step-body">Copy your <strong>Sheet ID</strong> from the URL:<br>
+        <span class="code-pill">spreadsheets/d/<strong>THIS_PART</strong>/edit</span>
+      </div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">3</div>
+      <div class="step-body">Get a free API key at <strong>console.cloud.google.com</strong> → APIs → Google Sheets API → Credentials → API Key. Restrict it to Sheets API only.</div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">4</div>
+      <div class="step-body">Paste both below and tap <strong>Connect</strong></div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label>Google Sheet ID</label>
+    <input type="text" id="s-sheet-id" placeholder="1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgVE2upms" autocomplete="off" autocorrect="off" spellcheck="false">
+  </div>
+  <div class="field">
+    <label>Google Sheets API Key</label>
+    <input type="text" id="s-api-key" placeholder="AIzaSy..." autocomplete="off" autocorrect="off" spellcheck="false">
+  </div>
+  <div class="field">
+    <label>Monthly Income (CA$)</label>
+    <input type="number" id="s-income" placeholder="5000" inputmode="decimal">
+  </div>
+  <button class="btn-main" onclick="connectSheet()">Connect &amp; Start</button>
+  <button class="btn-ghost" onclick="demoMode()">Try demo mode (no setup)</button>
+</div>
+
+<!-- MAIN APP -->
+<div id="app" class="screen">
+
+  <div class="status-strip">
+    <div class="status-dot" id="status-dot"></div>
+    <span class="status-text" id="status-text">Connected</span>
+    <a id="sheet-link" class="status-link" href="#" target="_blank" rel="noopener" style="font-size:11px">Open Sheet ↗</a>
+    <button class="disconnect-btn" onclick="disconnect()">✕</button>
+  </div>
+
+  <div class="scroll-content" id="scroll-content">
+
+    <!-- HOME TAB -->
+    <div class="tab-page active" id="tab-home">
+      <div class="month-nav">
+        <div class="month-title" id="month-title">May <span>2026</span></div>
+        <div class="nav-arrows">
+          <button class="nav-btn" onclick="changeMonth(-1)">‹</button>
+          <button class="nav-btn" onclick="changeMonth(1)">›</button>
+        </div>
+      </div>
+
+      <div class="kpi-grid" id="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-label">Income</div>
+          <div class="kpi-value accent" id="k-income">CA$5,000</div>
+          <div class="kpi-sub">Monthly budget</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Spent</div>
+          <div class="kpi-value red" id="k-spent">CA$0</div>
+          <div class="kpi-sub" id="k-pct">0% of budget</div>
+          <div class="prog"><div class="prog-fill" id="prog-spent" style="width:0%"></div></div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Remaining</div>
+          <div class="kpi-value green" id="k-remain">CA$5,000</div>
+          <div class="kpi-sub">Left to spend</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Saved</div>
+          <div class="kpi-value green" id="k-saved">CA$0</div>
+          <div class="kpi-sub" id="k-save-pct">0% rate</div>
+          <div class="prog"><div class="prog-fill" id="prog-saved" style="width:0%;background:var(--accent)"></div></div>
+        </div>
+      </div>
+
+      <div class="section-hd">
+        <h2>Spending by month</h2>
+      </div>
+      <div class="mini-chart" id="mini-chart"></div>
+
+      <div class="section-hd">
+        <h2>Category breakdown</h2>
+      </div>
+      <div class="cat-stack" id="cat-stack"></div>
+
+      <div class="section-hd">
+        <h2>Savings summary</h2>
+      </div>
+      <div class="savings-panel">
+        <div class="savings-row"><span class="savings-label">Current surplus</span><span class="savings-val pos" id="sv-surplus">CA$0</span></div>
+        <div class="savings-row"><span class="savings-label">Savings rate</span><span class="savings-val accent" id="sv-rate">0%</span></div>
+        <div class="savings-row"><span class="savings-label">Projected annual</span><span class="savings-val pos" id="sv-annual">CA$0</span></div>
+        <div class="savings-row"><span class="savings-label">Projected 5 years</span><span class="savings-val accent" id="sv-5yr">CA$0</span></div>
+      </div>
+    </div>
+
+    <!-- ADD TAB -->
+    <div class="tab-page" id="tab-add">
+      <div class="month-nav" style="margin-bottom:16px">
+        <div class="month-title" id="add-month-title">May <span>2026</span></div>
+      </div>
+      <div class="add-panel">
+        <div class="form-grid">
+          <div class="fi full">
+            <label>Description</label>
+            <input type="text" id="f-desc" placeholder="e.g. Groceries at Walmart">
+          </div>
+          <div class="fi">
+            <label>Amount (CA$)</label>
+            <input type="number" id="f-amt" placeholder="0.00" inputmode="decimal" min="0" step="0.01">
+          </div>
+          <div class="fi">
+            <label>Category</label>
+            <select id="f-cat">
+              <option value="">Select...</option>
+              <option>Housing</option>
+              <option>Food &amp; Dining</option>
+              <option>Transport</option>
+              <option>Utilities</option>
+              <option>Entertainment</option>
+              <option>Health</option>
+              <option>Shopping</option>
+              <option>Education</option>
+              <option>Savings</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="fi">
+            <label>Date</label>
+            <input type="date" id="f-date" style="color-scheme:dark">
+          </div>
+          <div class="fi full">
+            <label>Notes (optional)</label>
+            <input type="text" id="f-notes" placeholder="Any details...">
+          </div>
+        </div>
+        <button class="add-btn" id="add-btn" onclick="addExpense()">Save Expense</button>
+      </div>
+
+      <div class="section-hd">
+        <h2>Recent entries</h2>
+        <button onclick="switchTab('tab-home')">View all →</button>
+      </div>
+      <div class="txn-list" id="txn-add-list"></div>
+    </div>
+
+    <!-- HISTORY TAB -->
+    <div class="tab-page" id="tab-history">
+      <div class="month-nav">
+        <div class="month-title" id="hist-month-title">May <span>2026</span></div>
+        <div class="nav-arrows">
+          <button class="nav-btn" onclick="changeMonth(-1)">‹</button>
+          <button class="nav-btn" onclick="changeMonth(1)">›</button>
+        </div>
+      </div>
+      <div class="txn-list" id="txn-full-list"></div>
+    </div>
+
+    <!-- SETTINGS TAB -->
+    <div class="tab-page" id="tab-settings">
+      <div class="section-hd" style="margin-bottom:16px"><h2>Settings</h2></div>
+      <div class="settings-panel">
+        <div class="setting-row">
+          <div class="setting-label">Monthly income</div>
+          <input type="number" class="setting-input" id="set-income" inputmode="decimal">
+        </div>
+        <div class="setting-row">
+          <div class="setting-label">Housing budget</div>
+          <input type="number" class="setting-input" id="bud-Housing" inputmode="decimal">
+        </div>
+        <div class="setting-row">
+          <div class="setting-label">Food &amp; Dining</div>
+          <input type="number" class="setting-input" id="bud-Food & Dining" inputmode="decimal">
+        </div>
+        <div class="setting-row">
+          <div class="setting-label">Transport</div>
+          <input type="number" class="setting-input" id="bud-Transport" inputmode="decimal">
+        </div>
+        <div class="setting-row">
+          <div class="setting-label">Utilities</div>
+          <input type="number" class="setting-input" id="bud-Utilities" inputmode="decimal">
+        </div>
+        <div class="setting-row">
+          <div class="setting-label">Entertainment</div>
+          <input type="number" class="setting-input" id="bud-Entertainment" inputmode="decimal">
+        </div>
+        <div class="setting-row">
+          <div class="setting-label">Health</div>
+          <input type="number" class="setting-input" id="bud-Health" inputmode="decimal">
+        </div>
+        <div class="setting-row">
+          <div class="setting-label">Shopping</div>
+          <input type="number" class="setting-input" id="bud-Shopping" inputmode="decimal">
+        </div>
+        <div class="setting-row">
+          <div class="setting-label">Education</div>
+          <input type="number" class="setting-input" id="bud-Education" inputmode="decimal">
+        </div>
+        <div class="setting-row">
+          <div class="setting-label">Savings target</div>
+          <input type="number" class="setting-input" id="bud-Savings" inputmode="decimal">
+        </div>
+        <div class="setting-row">
+          <div class="setting-label">Other</div>
+          <input type="number" class="setting-input" id="bud-Other" inputmode="decimal">
+        </div>
+      </div>
+      <button class="btn-main" onclick="saveSettings()">Save Settings</button>
+      <div style="height:16px"></div>
+      <div class="settings-panel">
+        <div class="setting-row">
+          <div class="setting-label">Sheet ID</div>
+          <div class="setting-val" id="set-sheet-id" style="font-size:11px;color:var(--t2);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></div>
+        </div>
+        <div class="setting-row">
+          <div class="setting-label">Mode</div>
+          <div class="setting-val" id="set-mode">–</div>
+        </div>
+      </div>
+      <button class="btn-ghost" onclick="syncFromSheet()">↻ Force Sync</button>
+      <div style="height:10px"></div>
+      <button class="btn-ghost" style="color:var(--red);border-color:var(--red)" onclick="disconnect()">Disconnect &amp; Reset</button>
+    </div>
+
+  </div><!-- /scroll-content -->
+
+  <nav class="bottom-nav">
+    <button class="nav-tab active" id="nav-home" onclick="switchTab('tab-home','nav-home')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Home<div class="tab-dot"></div>
+    </button>
+    <button class="nav-tab" id="nav-add" onclick="switchTab('tab-add','nav-add')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+      Add<div class="tab-dot"></div>
+    </button>
+    <button class="nav-tab" id="nav-history" onclick="switchTab('tab-history','nav-history')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="14.5 17.5 3 6 3 3 6 3 17.5 14.5"/><line x1="13" y1="13" x2="19" y2="19"/><line x1="16" y1="16" x2="20" y2="20"/><path d="M3 21l5-5"/></svg>
+      History<div class="tab-dot"></div>
+    </button>
+    <button class="nav-tab" id="nav-settings" onclick="switchTab('tab-settings','nav-settings')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+      Settings<div class="tab-dot"></div>
+    </button>
+  </nav>
+</div>
+
+<div class="toast-wrap"><div class="toast" id="toast"></div></div>
+
+<script>
+/* ── STATE ─────────────────────────────────────────── */
+const CATS = ['Housing','Food & Dining','Transport','Utilities','Entertainment','Health','Shopping','Education','Savings','Other'];
+const CAT_EMOJI = {'Housing':'🏠','Food & Dining':'🍔','Transport':'🚌','Utilities':'💡','Entertainment':'🎬','Health':'💊','Shopping':'🛍','Education':'📚','Savings':'💰','Other':'📌'};
+const CAT_COLOR = {'Housing':'#6C63FF','Food & Dining':'#22C9A0','Transport':'#4D9FFF','Utilities':'#38c9b4','Entertainment':'#FF6B9D','Health':'#FFB020','Shopping':'#FF4D4D','Education':'#A78BFF','Savings':'#00E5A0','Other':'#666'};
+const MONTH_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const MONTH_FULL = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+let state = {
+  sheetId:'', apiKey:'', income:5000, isDemo:false,
+  year: new Date().getFullYear(), month: new Date().getMonth(),
+  expenses:[],
+  budgets:{Housing:1500,'Food & Dining':600,Transport:300,Utilities:200,Entertainment:150,Health:100,Shopping:200,Education:100,Savings:500,Other:350},
+  monthCache:{}
+};
+
+/* ── UTILS ─────────────────────────────────────────── */
+function fmt(n){return 'CA$'+Math.round(n).toLocaleString('en-CA')}
+function tabName(y,m){return MONTH_FULL[m]+'-'+y}
+function sheetURL(){return 'https://docs.google.com/spreadsheets/d/'+state.sheetId}
+function today(){return new Date().toISOString().slice(0,10)}
+function save(){try{localStorage.setItem('budgetio',JSON.stringify({sheetId:state.sheetId,apiKey:state.apiKey,income:state.income,budgets:state.budgets,isDemo:state.isDemo}))}catch(e){}}
+
+let toastTimer;
+function toast(msg, type='', dur=2500){
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.className='toast '+(type||'');
+  requestAnimationFrame(()=>el.classList.add('show'));
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>el.classList.remove('show'),dur);
+}
+
+function setStatus(s,msg){
+  document.getElementById('status-dot').className='status-dot'+(s==='syncing'?' syncing':s==='err'?' err':'');
+  document.getElementById('status-text').textContent=msg;
+}
+
+/* ── SETUP ─────────────────────────────────────────── */
+function connectSheet(){
+  const sid=document.getElementById('s-sheet-id').value.trim();
+  const key=document.getElementById('s-api-key').value.trim();
+  const inc=parseFloat(document.getElementById('s-income').value)||5000;
+  if(!sid||!key){toast('Please enter Sheet ID and API Key','error');return;}
+  state.sheetId=sid; state.apiKey=key; state.income=inc; state.isDemo=false;
+  save(); launchApp(); syncFromSheet();
+}
+
+function demoMode(){
+  state.isDemo=true; state.income=5000; state.sheetId='demo'; state.apiKey='';
+  state.expenses=[
+    {id:'d1',desc:'May Rent',cat:'Housing',amt:1500,date:'2026-05-01',notes:''},
+    {id:'d2',desc:'Groceries',cat:'Food & Dining',amt:127,date:'2026-05-02',notes:'Farm Boy'},
+    {id:'d3',desc:'TTC Pass',cat:'Transport',amt:156,date:'2026-05-01',notes:''},
+    {id:'d4',desc:'Netflix',cat:'Entertainment',amt:18,date:'2026-05-03',notes:''},
+    {id:'d5',desc:'Hydro',cat:'Utilities',amt:94,date:'2026-05-04',notes:''},
+    {id:'d6',desc:'Gym',cat:'Health',amt:55,date:'2026-05-01',notes:'GoodLife'},
+  ];
+  save(); launchApp();
+  document.getElementById('status-dot').style.background='var(--amber)';
+  document.getElementById('status-text').textContent='Demo mode — data not saved';
+  render();
+}
+
+function launchApp(){
+  document.getElementById('setup').classList.remove('active');
+  document.getElementById('app').classList.add('active');
+  document.getElementById('sheet-link').href=state.isDemo?'#':sheetURL();
+  document.getElementById('set-sheet-id').textContent=state.isDemo?'Demo':state.sheetId;
+  document.getElementById('set-mode').textContent=state.isDemo?'Demo':'Google Sheets';
+  document.getElementById('f-date').value=today();
+  updateMonthTitles();
+  loadSettings();
+}
+
+function disconnect(){
+  if(!confirm('Disconnect and reset all settings?'))return;
+  localStorage.removeItem('budgetio');
+  location.reload();
+}
+
+/* ── TABS ─────────────────────────────────────────── */
+let activeNav='nav-home';
+function switchTab(tabId, navId){
+  document.querySelectorAll('.tab-page').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+  navId=navId||'nav-'+tabId.replace('tab-','');
+  document.getElementById(navId).classList.add('active');
+  document.getElementById('scroll-content').scrollTop=0;
+  if(tabId==='tab-add'){renderTxnList('txn-add-list',5);}
+  if(tabId==='tab-history'){renderTxnList('txn-full-list');}
+}
+
+/* ── MONTH NAV ─────────────────────────────────────── */
+function changeMonth(d){
+  state.month+=d;
+  if(state.month>11){state.month=0;state.year++;}
+  if(state.month<0){state.month=11;state.year--;}
+  updateMonthTitles();
+  state.expenses=state.monthCache[tabName(state.year,state.month)]||[];
+  render();
+  if(!state.isDemo) syncFromSheet();
+}
+
+function updateMonthTitles(){
+  const mn=MONTH_SHORT[state.month], yr=state.year;
+  const html=mn+' <span>'+yr+'</span>';
+  ['month-title','add-month-title','hist-month-title'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.innerHTML=html;
+  });
+}
+
+/* ── SHEETS API ────────────────────────────────────── */
+async function sheetsGet(range){
+  const url=`https://sheets.googleapis.com/v4/spreadsheets/${state.sheetId}/values/${encodeURIComponent(range)}?key=${state.apiKey}`;
+  const r=await fetch(url);
+  if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.error?.message||r.statusText);}
+  return r.json();
+}
+
+async function sheetsPut(range, values){
+  const url=`https://sheets.googleapis.com/v4/spreadsheets/${state.sheetId}/values/${encodeURIComponent(range)}?valueInputOption=USER_ENTERED&key=${state.apiKey}`;
+  const r=await fetch(url,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({range,majorDimension:'ROWS',values})});
+  if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.error?.message||r.statusText);}
+  return r.json();
+}
+
+async function sheetsAppend(range, values){
+  const url=`https://sheets.googleapis.com/v4/spreadsheets/${state.sheetId}/values/${encodeURIComponent(range)}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS&key=${state.apiKey}`;
+  const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({range,majorDimension:'ROWS',values})});
+  if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.error?.message||r.statusText);}
+  return r.json();
+}
+
+async function ensureTab(){
+  const url=`https://sheets.googleapis.com/v4/spreadsheets/${state.sheetId}?key=${state.apiKey}`;
+  const r=await fetch(url); const data=await r.json();
+  const tab=tabName(state.year,state.month);
+  const exists=(data.sheets||[]).some(s=>s.properties.title===tab);
+  if(!exists){
+    const url2=`https://sheets.googleapis.com/v4/spreadsheets/${state.sheetId}:batchUpdate?key=${state.apiKey}`;
+    await fetch(url2,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({requests:[{addSheet:{properties:{title:tab}}}]})});
+    await sheetsAppend(tab+'!A1',[['Description','Category','Amount','Date','Notes']]);
+  }
+}
+
+async function syncFromSheet(){
+  if(state.isDemo) return;
+  setStatus('syncing','Syncing...');
+  try{
+    await ensureTab();
+    const tab=tabName(state.year,state.month);
+    const data=await sheetsGet(tab+'!A2:E');
+    state.expenses=(data.values||[]).filter(r=>r[0]).map((r,i)=>({
+      id:'r'+i, desc:r[0]||'', cat:r[1]||'Other',
+      amt:parseFloat(r[2])||0, date:r[3]||'', notes:r[4]||''
+    }));
+    state.monthCache[tab]=state.expenses;
+    setStatus('ok','Synced · '+new Date().toLocaleTimeString('en-CA',{hour:'2-digit',minute:'2-digit'}));
+    render();
+  }catch(e){
+    setStatus('err','Sync failed');
+    toast('Sync error: '+e.message,'error',4000);
+  }
+}
+
+async function writeAll(){
+  if(state.isDemo) return;
+  await ensureTab();
+  const tab=tabName(state.year,state.month);
+  const rows=state.expenses.map(e=>[e.desc,e.cat,e.amt,e.date,e.notes||'']);
+  await sheetsPut(tab+'!A2:E',rows.length?rows:[['','','','','']]);
+}
+
+/* ── EXPENSES ─────────────────────────────────────── */
+async function addExpense(){
+  const desc=document.getElementById('f-desc').value.trim();
+  const amt=parseFloat(document.getElementById('f-amt').value);
+  const cat=document.getElementById('f-cat').value;
+  const date=document.getElementById('f-date').value;
+  const notes=document.getElementById('f-notes').value.trim();
+  if(!desc||!amt||!cat||!date){toast('Fill in all required fields','error');return;}
+  const btn=document.getElementById('add-btn');
+  btn.disabled=true; btn.textContent='Saving...';
+  const entry={id:'e'+Date.now(),desc,cat,amt,date,notes};
+  state.expenses.push(entry);
+  state.monthCache[tabName(state.year,state.month)]=state.expenses;
+  render();
+  renderTxnList('txn-add-list',5);
+  if(!state.isDemo){
+    try{
+      await writeAll();
+      setStatus('ok','Saved · '+new Date().toLocaleTimeString('en-CA',{hour:'2-digit',minute:'2-digit'}));
+      toast('Saved to Google Sheets','success');
+    }catch(e){
+      state.expenses=state.expenses.filter(x=>x.id!==entry.id);
+      render(); toast('Save failed: '+e.message,'error',4000);
+    }
+  }else{toast('Added (demo)','success');}
+  document.getElementById('f-desc').value='';
+  document.getElementById('f-amt').value='';
+  document.getElementById('f-notes').value='';
+  btn.disabled=false; btn.textContent='Save Expense';
+}
+
+async function deleteExpense(id){
+  state.expenses=state.expenses.filter(e=>e.id!==id);
+  state.monthCache[tabName(state.year,state.month)]=state.expenses;
+  render();
+  renderTxnList('txn-add-list',5);
+  renderTxnList('txn-full-list');
+  if(!state.isDemo){
+    try{await writeAll(); toast('Deleted','success');}
+    catch(e){toast('Delete failed','error');}
+  }else{toast('Deleted');}
+}
+
+/* ── RENDER ─────────────────────────────────────────── */
+function render(){
+  const total=state.expenses.reduce((s,e)=>s+e.amt,0);
+  const remain=state.income-total;
+  const pct=state.income?Math.min(100,Math.round((total/state.income)*100)):0;
+  const savePct=state.income?Math.max(0,Math.round((remain/state.income)*100)):0;
+
+  document.getElementById('k-income').textContent=fmt(state.income);
+  document.getElementById('k-spent').textContent=fmt(total);
+  document.getElementById('k-remain').textContent=fmt(Math.max(0,remain));
+  document.getElementById('k-saved').textContent=fmt(Math.max(0,remain));
+  document.getElementById('k-pct').textContent=pct+'% of budget';
+  document.getElementById('k-save-pct').textContent=savePct+'% rate';
+
+  const spBar=document.getElementById('prog-spent');
+  spBar.style.width=pct+'%';
+  spBar.className='prog-fill'+(pct>90?' over':pct>70?' warn':'');
+  document.getElementById('prog-saved').style.width=Math.min(100,savePct)+'%';
+
+  // savings summary
+  document.getElementById('sv-surplus').textContent=fmt(Math.max(0,remain));
+  document.getElementById('sv-surplus').className='savings-val '+(remain>=0?'pos':'neg');
+  document.getElementById('sv-rate').textContent=savePct+'%';
+  document.getElementById('sv-annual').textContent=fmt(Math.max(0,remain)*12);
+  document.getElementById('sv-5yr').textContent=fmt(Math.max(0,remain)*60);
+
+  renderCategories();
+  renderMiniChart();
+}
+
+function renderCategories(){
+  const totals={};
+  state.expenses.forEach(e=>{ totals[e.cat]=(totals[e.cat]||0)+e.amt; });
+  const el=document.getElementById('cat-stack');
+  const activeCats=CATS.filter(c=>totals[c]);
+  if(!activeCats.length){el.innerHTML='<div class="empty-state">No expenses this month</div>';return;}
+  el.innerHTML=activeCats.map(c=>{
+    const sp=totals[c]||0, bud=state.budgets[c]||500;
+    const p=Math.min(100,Math.round((sp/bud)*100));
+    const over=sp>bud;
+    return `<div class="cat-card">
+      <div class="cat-top">
+        <div class="cat-name"><div class="cat-swatch" style="background:${CAT_COLOR[c]}"></div>${CAT_EMOJI[c]} ${c}</div>
+        <div class="cat-nums${over?' over':''}">${fmt(sp)} / ${fmt(bud)}</div>
+      </div>
+      <div class="cat-prog"><div class="cat-prog-fill" style="width:${p}%;background:${over?'var(--red)':CAT_COLOR[c]}"></div></div>
+    </div>`;
+  }).join('');
+}
+
+function renderTxnList(listId, limit){
+  const el=document.getElementById(listId);
+  if(!el) return;
+  const sorted=[...state.expenses].sort((a,b)=>b.date.localeCompare(a.date));
+  const rows=limit?sorted.slice(0,limit):sorted;
+  if(!rows.length){el.innerHTML='<div class="empty-state">No expenses yet</div>';return;}
+  el.innerHTML=rows.map(e=>`
+    <div class="txn-row">
+      <div class="txn-icon" style="background:${CAT_COLOR[e.cat]}22">${CAT_EMOJI[e.cat]||'📌'}</div>
+      <div class="txn-body">
+        <div class="txn-desc">${e.desc}</div>
+        <div class="txn-meta">${e.cat} · ${e.date}${e.notes?' · '+e.notes:''}</div>
+      </div>
+      <div class="txn-right">
+        <div class="txn-amt">-${fmt(e.amt)}</div>
+      </div>
+      <button class="txn-del" onclick="deleteExpense('${e.id}')">×</button>
+    </div>`).join('');
+}
+
+function renderMiniChart(){
+  const el=document.getElementById('mini-chart');
+  const months=[];
+  for(let i=5;i>=0;i--){
+    let m=state.month-i, y=state.year;
+    if(m<0){m+=12;y--;}
+    const key=tabName(y,m);
+    const exps=state.monthCache[key]||[];
+    const total=exps.reduce((s,e)=>s+e.amt,0);
+    months.push({label:MONTH_SHORT[m], total, isCur:(m===state.month&&y===state.year)});
+  }
+  const max=Math.max(...months.map(m=>m.total),1);
+  el.innerHTML=months.map(m=>`
+    <div class="chart-col">
+      <div class="chart-bar-wrap">
+        <div class="chart-bar${m.isCur?' cur':''}" style="height:${Math.max(5,Math.round((m.total/max)*70))}px"></div>
+      </div>
+      <div class="chart-lbl">${m.label}</div>
+    </div>`).join('');
+}
+
+/* ── SETTINGS ─────────────────────────────────────── */
+function loadSettings(){
+  document.getElementById('set-income').value=state.income;
+  CATS.forEach(c=>{
+    const el=document.getElementById('bud-'+c);
+    if(el) el.value=state.budgets[c]||0;
+  });
+}
+
+function saveSettings(){
+  state.income=parseFloat(document.getElementById('set-income').value)||5000;
+  CATS.forEach(c=>{
+    const el=document.getElementById('bud-'+c);
+    if(el) state.budgets[c]=parseFloat(el.value)||0;
+  });
+  save(); render(); toast('Settings saved','success');
+}
+
+/* ── BOOT ─────────────────────────────────────────── */
+(function boot(){
+  try{
+    const saved=JSON.parse(localStorage.getItem('budgetio')||'{}');
+    if(saved.sheetId){
+      Object.assign(state,saved);
+      if(saved.budgets) state.budgets=saved.budgets;
+      launchApp();
+      if(!state.isDemo) syncFromSheet();
+      else render();
+      return;
+    }
+  }catch(e){}
+  document.getElementById('setup').classList.add('active');
+})();
+</script>
+
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('sw.js').catch(()=>{});
+  });
+}
+</script>
+</body>
+</html>
