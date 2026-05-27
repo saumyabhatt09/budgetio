@@ -1023,6 +1023,25 @@ function renderHomeCats(){
   }).join('');
 }
 
+/* ── TRANSACTION LIST ───────────────── */
+function renderTxnBody(id){
+  const el=document.getElementById(id);if(!el)return;
+  const sorted=[...S.expenses].sort((a,b)=>b.date.localeCompare(a.date));
+  if(!sorted.length){el.innerHTML='<div class="txn-empty">No expenses this month</div>';return;}
+  el.innerHTML=sorted.map(e=>`
+    <div class="txn-row-item">
+      <div class="txn-desc-cell">
+        <div class="txn-icon" style="background:${CAT_COLORS[e.cat]}22">${CAT_EMOJI[e.cat]||'📌'}</div>
+        <div><div class="txn-desc-text">${e.desc}</div><div class="txn-date-text">${e.cat}${e.notes?' · '+e.notes:''}</div></div>
+      </div>
+      <div><span class="txn-cat-pill"><span class="txn-cat-dot" style="background:${CAT_COLORS[e.cat]}"></span>${e.cat}</span></div>
+      <div><span class="txn-type">Expense</span></div>
+      <div class="txn-amt">-${fmt(e.amt)}</div>
+      <div class="txn-date-col">${e.date}</div>
+      <button class="txn-del" onclick="deleteExpense('${e.id}')">×</button>
+    </div>`).join('');
+}
+
 /* ── DEPOSITS ───────────────────────── */
 async function addDeposit(){
   const amt=parseFloat(document.getElementById('dep-amt').value);
