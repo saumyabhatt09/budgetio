@@ -216,6 +216,70 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
 .savings-v.g{color:var(--green)}
 .savings-v.p{color:var(--purple)}
 
+/* ── BUDGET HERO ─────────────────────── */
+.budget-hero{background:linear-gradient(135deg,var(--navy) 0%,var(--navy3) 100%);border-radius:20px;padding:28px 24px;display:grid;grid-template-columns:auto 1fr;gap:28px;align-items:center;border:none;color:#fff}
+.ring-wrap{position:relative;width:150px;height:150px;flex-shrink:0}
+.ring-wrap canvas{width:150px!important;height:150px!important}
+.ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none}
+.ring-pct{font-size:28px;font-weight:700;font-family:var(--mono);color:#fff;letter-spacing:-1px;line-height:1}
+.ring-lbl{font-size:11px;color:rgba(255,255,255,.5);margin-top:3px;text-transform:uppercase;letter-spacing:.8px}
+.hero-right{display:flex;flex-direction:column;gap:14px}
+.hero-stat{display:flex;flex-direction:column;gap:3px}
+.hero-stat-lbl{font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:rgba(255,255,255,.4);font-weight:500}
+.hero-stat-val{font-size:22px;font-weight:700;font-family:var(--mono);letter-spacing:-0.5px}
+.hero-stat-val.green{color:var(--accent)}
+.hero-stat-val.red{color:#ff7070}
+.hero-stat-val.white{color:#fff}
+.hero-divider{height:1px;background:rgba(255,255,255,.1)}
+.hero-cats{display:flex;flex-direction:column;gap:8px}
+.hero-cat-row{display:flex;align-items:center;gap:8px}
+.hero-cat-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+.hero-cat-name{font-size:12px;color:rgba(255,255,255,.5);flex:1}
+.hero-cat-amt{font-size:12px;font-weight:600;font-family:var(--mono);color:rgba(255,255,255,.8)}
+.hero-cat-bar-wrap{width:60px;height:4px;background:rgba(255,255,255,.1);border-radius:4px;overflow:hidden}
+.hero-cat-bar{height:100%;border-radius:4px;transition:width .5s}
+
+/* ── SAVINGS POT ─────────────────────── */
+.pot-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.pot-card{background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:4px;position:relative;overflow:hidden}
+.pot-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:14px 14px 0 0}
+.pot-card.total::before{background:linear-gradient(90deg,var(--purple),var(--purple2))}
+.pot-card.monthly::before{background:var(--green)}
+.pot-card.rate::before{background:var(--amber)}
+.pot-icon{font-size:20px;margin-bottom:2px}
+.pot-label{font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--t2);font-weight:500}
+.pot-value{font-size:20px;font-weight:700;font-family:var(--mono);color:var(--t1)}
+.pot-value.green{color:var(--green)}
+.pot-value.purple{color:var(--purple)}
+.pot-sub{font-size:11px;color:var(--t3)}
+.deposit-row{display:flex;gap:10px;margin-bottom:16px}
+.deposit-input{flex:1;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:11px 13px;color:var(--t1);font-size:15px;font-family:var(--mono);font-weight:600;outline:none;transition:border-color .15s}
+.deposit-input:focus{border-color:var(--green)}
+.deposit-btn{background:var(--green);color:#fff;border-radius:10px;padding:11px 20px;font-size:14px;font-weight:600;transition:opacity .15s,transform .1s;white-space:nowrap}
+.deposit-btn:active{transform:scale(.97);opacity:.85}
+.deposit-history{display:flex;flex-direction:column;gap:6px;max-height:180px;overflow-y:auto}
+.deposit-item{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--card2);border-radius:10px;border:1px solid var(--border)}
+.deposit-icon{font-size:16px}
+.deposit-info{flex:1}
+.deposit-desc{font-size:13px;font-weight:500;color:var(--t1)}
+.deposit-date{font-size:11px;color:var(--t2);margin-top:1px}
+.deposit-amt{font-size:14px;font-weight:700;font-family:var(--mono);color:var(--green)}
+.deposit-del{color:var(--t3);font-size:16px;cursor:pointer;padding:2px 4px}
+.deposit-del:active{color:var(--red)}
+
+/* ── NET WORTH PREDICTOR ──────────────── */
+.predictor-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.pred-card{background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center}
+.pred-period{font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--t2);font-weight:600;margin-bottom:6px}
+.pred-val{font-size:18px;font-weight:700;font-family:var(--mono);color:var(--purple)}
+.pred-val.big{font-size:20px;color:var(--green)}
+.pred-delta{font-size:11px;color:var(--t3);margin-top:3px}
+.rate-input-row{display:flex;align-items:center;gap:10px;background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:12px 16px;margin-bottom:16px}
+.rate-input-lbl{font-size:13px;color:var(--t2);flex:1}
+.rate-input{width:70px;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:7px 10px;color:var(--t1);font-size:14px;font-family:var(--mono);font-weight:600;text-align:center;outline:none}
+.rate-input:focus{border-color:var(--purple)}
+.rate-unit{font-size:13px;color:var(--t2)}
+
 /* BOTTOM NAV (mobile only) */
 .bottom-nav{display:none}
 
@@ -376,67 +440,39 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
       <!-- HOME TAB -->
       <div id="tab-home">
 
-        <!-- KPI -->
-        <div class="kpi-row">
-          <div class="kpi-card">
-            <div class="kpi-label">Current Net Worth <span class="kpi-info">i</span></div>
-            <div class="kpi-value" id="k-networth">CA$0</div>
-            <span class="kpi-badge neu" id="k-networth-badge">– –</span>
-            <canvas class="kpi-sparkline" id="spark1"></canvas>
-          </div>
-          <div class="kpi-card">
-            <div class="kpi-label">Income <span class="kpi-info">i</span></div>
-            <div class="kpi-value" id="k-income">CA$5,000</div>
-            <span class="kpi-badge up" id="k-income-badge">Monthly budget</span>
-          </div>
-          <div class="kpi-card">
-            <div class="kpi-label">Total Expenses <span class="kpi-info">i</span></div>
-            <div class="kpi-value" id="k-spent">CA$0</div>
-            <span class="kpi-badge dn" id="k-spent-badge">0% of budget</span>
-          </div>
-          <div class="kpi-card">
-            <div class="kpi-label">Total Savings <span class="kpi-info">i</span></div>
-            <div class="kpi-value" id="k-saved">CA$0</div>
-            <span class="kpi-badge up" id="k-saved-badge">0% rate</span>
-          </div>
-        </div>
-
-        <!-- MID -->
-        <div class="mid-row">
-          <div class="card">
-            <div class="card-hd">
-              <h2>Net Worth over Time</h2>
-              <span class="card-hd-right" id="chart-range">Last 6 months</span>
+        <!-- BUDGET HERO RING -->
+        <div class="budget-hero card">
+          <div class="ring-wrap">
+            <canvas id="budgetRing"></canvas>
+            <div class="ring-center">
+              <div class="ring-pct" id="ring-pct">0%</div>
+              <div class="ring-lbl">used</div>
             </div>
-            <div class="chart-area"><canvas id="netWorthChart"></canvas></div>
           </div>
-          <div style="display:flex;flex-direction:column;gap:16px">
-            <div class="card">
-              <div class="card-hd"><h2>Current Assets by Category</h2></div>
-              <div class="donut-wrap">
-                <canvas id="assetsChart"></canvas>
-                <div class="donut-center">
-                  <div class="donut-center-val" id="assets-total">CA$0</div>
-                  <div class="donut-center-lbl">Total Assets</div>
-                </div>
-              </div>
-              <div class="legend-list" id="assets-legend"></div>
+          <div class="hero-right">
+            <div class="hero-stat">
+              <div class="hero-stat-lbl">Monthly Budget</div>
+              <div class="hero-stat-val white" id="h-income">CA$5,000</div>
             </div>
-            <div class="card">
-              <div class="card-hd"><h2>Current Liabilities by Category</h2></div>
-              <div class="donut-wrap">
-                <canvas id="liabChart"></canvas>
-                <div class="donut-center">
-                  <div class="donut-center-val" id="liab-total">CA$0</div>
-                  <div class="donut-center-lbl">Total Spent</div>
-                </div>
-              </div>
-              <div class="legend-list" id="liab-legend"></div>
+            <div class="hero-divider"></div>
+            <div class="hero-stat">
+              <div class="hero-stat-lbl">Spent</div>
+              <div class="hero-stat-val red" id="h-spent">CA$0</div>
+            </div>
+            <div class="hero-stat">
+              <div class="hero-stat-lbl">Remaining</div>
+              <div class="hero-stat-val green" id="h-remain">CA$5,000</div>
             </div>
           </div>
         </div>
 
-        <!-- TRANSACTIONS -->
+        <!-- TOP SPENDING CATEGORIES (compact) -->
+        <div class="card">
+          <div class="card-hd"><h2>Top Categories</h2><span class="card-hd-right" id="home-month-lbl"></span></div>
+          <div id="home-cat-bars" class="cat-bars"></div>
+        </div>
+
+        <!-- RECENT TRANSACTIONS -->
         <div class="txn-section">
           <div class="card-hd" style="padding:18px 20px 0">
             <h2>Recent Transactions</h2>
@@ -511,37 +547,85 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
 
       <!-- SAVINGS TAB -->
       <div id="tab-savings" style="display:none">
-        <div class="kpi-row" style="grid-template-columns:repeat(3,1fr)">
-          <div class="kpi-card">
-            <div class="kpi-label">Monthly Surplus</div>
-            <div class="kpi-value g" id="sv-surplus" style="color:var(--green)">CA$0</div>
-            <span class="kpi-badge up">After expenses</span>
+
+        <!-- SAVINGS POT SUMMARY -->
+        <div class="card">
+          <div class="card-hd"><h2>💰 Your Savings Pot</h2><span class="card-hd-right">All time</span></div>
+          <div class="pot-grid">
+            <div class="pot-card total" style="grid-column:1/-1">
+              <div class="pot-icon">🏦</div>
+              <div class="pot-label">Total Saved</div>
+              <div class="pot-value purple" id="pot-total">CA$0</div>
+              <div class="pot-sub" id="pot-deposits-count">0 deposits</div>
+            </div>
+            <div class="pot-card monthly">
+              <div class="pot-icon">📅</div>
+              <div class="pot-label">This Month's Surplus</div>
+              <div class="pot-value green" id="pot-surplus">CA$0</div>
+              <div class="pot-sub">Available to save</div>
+            </div>
+            <div class="pot-card rate">
+              <div class="pot-icon">📊</div>
+              <div class="pot-label">Savings Rate</div>
+              <div class="pot-value" id="pot-rate" style="color:var(--amber)">0%</div>
+              <div class="pot-sub">Of monthly income</div>
+            </div>
           </div>
-          <div class="kpi-card">
-            <div class="kpi-label">Annual Projection</div>
-            <div class="kpi-value" id="sv-annual">CA$0</div>
-            <span class="kpi-badge up">If same rate</span>
+
+          <!-- ADD TO SAVINGS -->
+          <div style="font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--t2);font-weight:600;margin-bottom:8px">Add to savings pot</div>
+          <div class="deposit-row">
+            <input type="number" class="deposit-input" id="dep-amt" placeholder="0.00" inputmode="decimal" min="0" step="0.01">
+            <input type="text" class="deposit-input" id="dep-note" placeholder="e.g. April surplus" style="flex:1.5">
+            <button class="deposit-btn" onclick="addDeposit()">+ Save</button>
           </div>
-          <div class="kpi-card">
-            <div class="kpi-label">5-Year Projection</div>
-            <div class="kpi-value" id="sv-5yr">CA$0</div>
-            <span class="kpi-badge neu">Compounded</span>
+
+          <!-- DEPOSIT HISTORY -->
+          <div style="font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--t2);font-weight:600;margin-bottom:8px">Deposit history</div>
+          <div class="deposit-history" id="deposit-history">
+            <div style="color:var(--t3);font-size:13px;text-align:center;padding:16px 0">No deposits yet — start saving!</div>
           </div>
         </div>
+
+        <!-- NET WORTH PREDICTOR -->
+        <div class="card">
+          <div class="card-hd"><h2>📈 Net Worth Predictor</h2></div>
+
+          <div class="rate-input-row">
+            <span class="rate-input-lbl">Monthly savings amount (used for projection)</span>
+            <input type="number" class="rate-input" id="proj-monthly" placeholder="500" inputmode="decimal">
+            <span class="rate-unit">CA$</span>
+          </div>
+          <div class="rate-input-row">
+            <span class="rate-input-lbl">Expected annual return (investment rate)</span>
+            <input type="number" class="rate-input" id="proj-rate" placeholder="6" inputmode="decimal" value="6">
+            <span class="rate-unit">%</span>
+          </div>
+          <div class="rate-input-row">
+            <span class="rate-input-lbl">Current savings / existing net worth</span>
+            <input type="number" class="rate-input" id="proj-current" placeholder="0" inputmode="decimal">
+            <span class="rate-unit">CA$</span>
+          </div>
+
+          <div class="predictor-grid" id="predictor-grid">
+            <div class="pred-card"><div class="pred-period">1 Year</div><div class="pred-val" id="pred-1y">CA$0</div><div class="pred-delta" id="pred-1y-d">+CA$0</div></div>
+            <div class="pred-card"><div class="pred-period">3 Years</div><div class="pred-val" id="pred-3y">CA$0</div><div class="pred-delta" id="pred-3y-d">+CA$0</div></div>
+            <div class="pred-card"><div class="pred-period">5 Years</div><div class="pred-val big" id="pred-5y">CA$0</div><div class="pred-delta" id="pred-5y-d">+CA$0</div></div>
+            <div class="pred-card"><div class="pred-period">10 Years</div><div class="pred-val big" id="pred-10y">CA$0</div><div class="pred-delta" id="pred-10y-d">+CA$0</div></div>
+            <div class="pred-card"><div class="pred-period">20 Years</div><div class="pred-val big" id="pred-20y">CA$0</div><div class="pred-delta" id="pred-20y-d">+CA$0</div></div>
+            <div class="pred-card"><div class="pred-period">30 Years</div><div class="pred-val big" id="pred-30y">CA$0</div><div class="pred-delta" id="pred-30y-d">+CA$0</div></div>
+          </div>
+
+          <div class="chart-area" style="height:180px"><canvas id="networthChart"></canvas></div>
+          <div style="font-size:11px;color:var(--t3);margin-top:10px;text-align:center">Projection assumes consistent monthly savings with compound growth at the rate above.</div>
+        </div>
+
+        <!-- BUDGET VS ACTUAL -->
         <div class="card">
           <div class="card-hd"><h2>Budget vs Actual</h2></div>
           <div class="cat-bars" id="cat-bars2"></div>
         </div>
-        <div class="card">
-          <div class="card-hd"><h2>Savings Breakdown</h2></div>
-          <div class="savings-rows">
-            <div class="savings-r"><span class="savings-l">Monthly income</span><span class="savings-v p" id="sv-income">CA$0</span></div>
-            <div class="savings-r"><span class="savings-l">Total expenses</span><span class="savings-v" style="color:var(--red)" id="sv-spent">CA$0</span></div>
-            <div class="savings-r"><span class="savings-l">Savings rate</span><span class="savings-v p" id="sv-rate">0%</span></div>
-            <div class="savings-r"><span class="savings-l">Projected annual savings</span><span class="savings-v g" id="sv-annual2">CA$0</span></div>
-            <div class="savings-r"><span class="savings-l">Projected 5-year savings</span><span class="savings-v g" id="sv-5yr2">CA$0</span></div>
-          </div>
-        </div>
+
       </div>
 
     </div><!-- /content -->
@@ -584,6 +668,7 @@ let S={
   isDemo:false,
   year:new Date().getFullYear(), month:new Date().getMonth(),
   expenses:[], cache:{},
+  deposits:[], // {id, amt, note, date}
   budgets:{Housing:1500,'Food & Dining':600,Transport:300,Utilities:200,Entertainment:150,Health:100,Shopping:200,Education:100,Savings:500,Other:350}
 };
 
@@ -591,7 +676,7 @@ let S={
 function fmt(n){return S.currency+Math.abs(Math.round(n)).toLocaleString('en-CA')}
 function tabName(y,m){return MONTH_FULL[m]+'-'+y}
 function today(){return new Date().toISOString().slice(0,10)}
-function save(){try{localStorage.setItem(CONF_KEY,JSON.stringify({clientId:S.clientId,sheetId:S.sheetId,income:S.income,budgets:S.budgets,currency:S.currency,isDemo:S.isDemo}))}catch(e){}}
+function save(){try{localStorage.setItem(CONF_KEY,JSON.stringify({clientId:S.clientId,sheetId:S.sheetId,income:S.income,budgets:S.budgets,currency:S.currency,isDemo:S.isDemo,deposits:S.deposits}))}catch(e){}}
 
 let toastT;
 function toast(msg,type='',dur=2500){
@@ -763,6 +848,11 @@ function launchApp(){
   document.getElementById('f-date').value=today();
   updateMonthLabels();
   if(!S.isDemo&&S.clientId)initGIS();
+  // Live-update net worth predictor when inputs change
+  ['proj-monthly','proj-rate','proj-current'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)el.addEventListener('input',renderNetWorthPredictor);
+  });
 }
 
 function disconnect(){
@@ -839,6 +929,7 @@ async function syncSheet(){
     }));
     S.cache[tab]=S.expenses;
     setSync('ok','Synced '+new Date().toLocaleTimeString('en-CA',{hour:'2-digit',minute:'2-digit'}));
+    await loadDeposits();
     renderAll();
   }catch(e){setSync('err','Sync failed');toast('Sync error: '+e.message,'err',4000);}
 }
@@ -884,112 +975,145 @@ async function deleteExpense(id){
 }
 
 /* ── RENDER ALL ─────────────────────── */
-function renderAll(){renderKPIs();renderTxnBody('txn-body');renderTxnBody('txn-body2');renderCharts();renderBreakdown();renderSavings();}
+function renderAll(){renderBudgetRing();renderHomeCats();renderTxnBody('txn-body');renderTxnBody('txn-body2');renderBreakdown();renderSavings();}
 
-function renderKPIs(){
+/* ── BUDGET RING (home hero) ─────────── */
+function renderBudgetRing(){
+  destroyChart('budgetRing');
   const total=S.expenses.reduce((s,e)=>s+e.amt,0);
-  const remain=S.income-total;
-  const pct=S.income?Math.round((total/S.income)*100):0;
-  const savePct=S.income?Math.max(0,Math.round((remain/S.income)*100)):0;
-  document.getElementById('k-income').textContent=fmt(S.income);
-  document.getElementById('k-spent').textContent=fmt(total);
-  document.getElementById('k-saved').textContent=fmt(Math.max(0,remain));
-  document.getElementById('k-networth').textContent=fmt(Math.max(0,remain)*6); // 6-month rolling approx
-  document.getElementById('k-spent-badge').textContent=pct+'% of budget';
-  document.getElementById('k-spent-badge').className='kpi-badge '+(pct>90?'dn':pct>70?'neu':'up');
-  document.getElementById('k-saved-badge').textContent=savePct+'% savings rate';
-  document.getElementById('k-networth-badge').textContent=(remain>=0?'▲ +':' ▼ -')+fmt(Math.abs(remain))+' this month';
-  document.getElementById('k-networth-badge').className='kpi-badge '+(remain>=0?'up':'dn');
+  const remain=Math.max(0,S.income-total);
+  const pct=S.income?Math.min(100,Math.round((total/S.income)*100)):0;
+  const over=total>S.income;
+  document.getElementById('ring-pct').textContent=pct+'%';
+  document.getElementById('h-income').textContent=fmt(S.income);
+  document.getElementById('h-spent').textContent=fmt(total);
+  document.getElementById('h-remain').textContent=fmt(remain);
+  document.getElementById('home-month-lbl').textContent=MONTH_SHORT[S.month]+' '+S.year;
   document.getElementById('txn-count').textContent=S.expenses.length+' this month';
-}
-
-function renderTxnBody(id){
-  const el=document.getElementById(id);if(!el)return;
-  const sorted=[...S.expenses].sort((a,b)=>b.date.localeCompare(a.date));
-  if(!sorted.length){el.innerHTML='<div class="txn-empty">No expenses this month</div>';return;}
-  el.innerHTML=sorted.map(e=>`
-    <div class="txn-row-item">
-      <div class="txn-desc-cell">
-        <div class="txn-icon" style="background:${CAT_COLORS[e.cat]}22">${CAT_EMOJI[e.cat]||'📌'}</div>
-        <div><div class="txn-desc-text">${e.desc}</div><div class="txn-date-text">${e.cat}${e.notes?' · '+e.notes:''}</div></div>
-      </div>
-      <div><span class="txn-cat-pill"><span class="txn-cat-dot" style="background:${CAT_COLORS[e.cat]}"></span>${e.cat}</span></div>
-      <div><span class="txn-type">Expense</span></div>
-      <div class="txn-amt">-${fmt(e.amt)}</div>
-      <div class="txn-date-col">${e.date}</div>
-      <button class="txn-del" onclick="deleteExpense('${e.id}')">×</button>
-    </div>`).join('');
-}
-
-/* ── CHARTS ─────────────────────────── */
-let charts={};
-function destroyChart(key){if(charts[key]){charts[key].destroy();charts[key]=null;}}
-
-function renderCharts(){
-  renderNetWorthChart();
-  renderDonut('assetsChart','assets-legend','assets-total',true);
-  renderDonut('liabChart','liab-legend','liab-total',false);
-}
-
-function renderNetWorthChart(){
-  destroyChart('networth');
-  const months=[];const vals=[];
-  for(let i=5;i>=0;i--){
-    let m=S.month-i,y=S.year;
-    if(m<0){m+=12;y--;}
-    const exps=S.cache[tabName(y,m)]||[];
-    const total=exps.reduce((s,e)=>s+e.amt,0);
-    months.push(MONTH_SHORT[m]);
-    vals.push(Math.max(0,S.income-total));
-  }
-  const ctx=document.getElementById('netWorthChart');if(!ctx)return;
-  charts.networth=new Chart(ctx,{
-    type:'line',
-    data:{labels:months,datasets:[{
-      label:'Savings',data:vals,
-      borderColor:'#6c4ef2',backgroundColor:'rgba(108,78,242,0.08)',
-      tension:.4,fill:true,pointBackgroundColor:'#6c4ef2',
-      pointRadius:4,pointHoverRadius:6,borderWidth:2.5
-    }]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+fmt(c.parsed.y)}}},
-      scales:{x:{grid:{color:'rgba(0,0,0,.04)'},ticks:{color:'#9b98b8',font:{size:11,family:'Outfit'}}},
-        y:{grid:{color:'rgba(0,0,0,.04)'},ticks:{color:'#9b98b8',font:{size:11,family:'Outfit'},callback:v=>S.currency+v.toLocaleString()}}}}
+  const usedColor=over?'#ff7070':pct>75?'#FFB020':'#b4ff6e';
+  const ctx=document.getElementById('budgetRing');if(!ctx)return;
+  charts.budgetRing=new Chart(ctx,{
+    type:'doughnut',
+    data:{datasets:[{data:[Math.min(total,S.income),Math.max(0,S.income-total)],backgroundColor:[usedColor,'rgba(255,255,255,0.08)'],borderWidth:0,hoverOffset:0}]},
+    options:{responsive:false,cutout:'78%',animation:{duration:600},plugins:{legend:{display:false},tooltip:{enabled:false}}}
   });
 }
 
-function renderDonut(canvasId,legendId,totalId,isAssets){
-  destroyChart(canvasId);
+/* ── HOME CATEGORY BARS ─────────────── */
+function renderHomeCats(){
   const totals={};
   S.expenses.forEach(e=>{ totals[e.cat]=(totals[e.cat]||0)+e.amt; });
-  const active=CATS.filter(c=>totals[c]);
-  const total=active.reduce((s,c)=>s+totals[c],0);
-  if(!active.length){
-    document.getElementById(totalId).textContent=fmt(0);
-    document.getElementById(legendId).innerHTML='<div style="color:var(--t3);font-size:12px;text-align:center;padding:8px 0">No data</div>';
-    return;
-  }
-  document.getElementById(totalId).textContent=fmt(total);
-  const ctx=document.getElementById(canvasId);if(!ctx)return;
-  charts[canvasId]=new Chart(ctx,{
-    type:'doughnut',
-    data:{
-      labels:active,
-      datasets:[{data:active.map(c=>totals[c]),backgroundColor:active.map(c=>CAT_COLORS[c]),borderWidth:2,borderColor:'#fff',hoverOffset:4}]
-    },
-    options:{responsive:true,maintainAspectRatio:false,cutout:'70%',
-      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.label+': '+fmt(c.parsed)}}}}
-  });
-  document.getElementById(legendId).innerHTML=active.slice(0,5).map(c=>{
-    const pct=Math.round((totals[c]/total)*100);
-    return `<div class="legend-item">
-      <div class="legend-dot" style="background:${CAT_COLORS[c]}"></div>
-      <span class="legend-name">${c}</span>
-      <span class="legend-val">${fmt(totals[c])}</span>
-      <span class="legend-pct">${pct}%</span>
+  const sorted=CATS.filter(c=>totals[c]).sort((a,b)=>totals[b]-totals[a]).slice(0,5);
+  const el=document.getElementById('home-cat-bars');if(!el)return;
+  if(!sorted.length){el.innerHTML='<div style="color:var(--t3);font-size:13px;text-align:center;padding:16px 0">No expenses this month yet</div>';return;}
+  el.innerHTML=sorted.map(c=>{
+    const sp=totals[c],bud=S.budgets[c]||500;
+    const pct=Math.min(100,Math.round((sp/bud)*100));
+    return `<div class="cat-bar-item">
+      <div class="cat-bar-top">
+        <div class="cat-bar-name"><span style="font-size:15px">${CAT_EMOJI[c]}</span>${c}</div>
+        <div class="cat-bar-nums${sp>bud?' over':''}">${fmt(sp)}<span style="color:var(--t3);font-weight:400"> / ${fmt(bud)}</span></div>
+      </div>
+      <div class="cat-track"><div class="cat-fill" style="width:${pct}%;background:${sp>bud?'var(--red)':CAT_COLORS[c]}"></div></div>
     </div>`;
   }).join('');
 }
 
+/* ── DEPOSITS ───────────────────────── */
+async function addDeposit(){
+  const amt=parseFloat(document.getElementById('dep-amt').value);
+  const note=document.getElementById('dep-note').value.trim()||'Savings deposit';
+  if(!amt||amt<=0){toast('Enter a valid amount','err');return;}
+  const dep={id:'dep'+Date.now(),amt,note,date:today()};
+  S.deposits.push(dep);save();renderSavings();
+  if(!S.isDemo)await writeDeposits();
+  document.getElementById('dep-amt').value='';document.getElementById('dep-note').value='';
+  toast('Added to savings pot 💰','ok');
+}
+async function deleteDeposit(id){
+  S.deposits=S.deposits.filter(d=>d.id!==id);save();renderSavings();
+  if(!S.isDemo)await writeDeposits();toast('Removed');
+}
+async function writeDeposits(){
+  try{
+    const allSheets=await sheetsReq('GET','?fields=sheets.properties.title');
+    const tab='Savings-Pot';
+    const exists=(allSheets?.sheets||[]).some(s=>s.properties.title===tab);
+    if(!exists){
+      await sheetsReq('POST',':batchUpdate',{requests:[{addSheet:{properties:{title:tab}}}]});
+      await sheetsReq('PUT','/values/'+encodeURIComponent(tab+'!A1:D1')+'?valueInputOption=USER_ENTERED',
+        {range:tab+'!A1:D1',majorDimension:'ROWS',values:[['Note','Amount','Date','ID']]});
+    }
+    const rows=S.deposits.map(d=>[d.note,d.amt,d.date,d.id]);
+    await sheetsReq('PUT','/values/'+encodeURIComponent(tab+'!A2:D')+'?valueInputOption=USER_ENTERED',
+      {range:tab+'!A2:D',majorDimension:'ROWS',values:rows.length?rows:[[' ',0,' ',' ']]});
+  }catch(e){console.error(e);}
+}
+async function loadDeposits(){
+  if(S.isDemo)return;
+  try{
+    const data=await sheetsReq('GET','/values/'+encodeURIComponent('Savings-Pot!A2:D'));
+    if(data?.values) S.deposits=(data.values).filter(r=>r[1]).map(r=>({id:r[3]||'r'+Math.random(),note:r[0]||'',amt:parseFloat(r[1])||0,date:r[2]||''}));
+  }catch(e){}
+}
+
+/* ── RENDER SAVINGS TAB ─────────────── */
+function renderSavings(){
+  const total=S.expenses.reduce((s,e)=>s+e.amt,0);
+  const surplus=Math.max(0,S.income-total);
+  const rate=S.income?Math.max(0,Math.round((surplus/S.income)*100)):0;
+  const potTotal=S.deposits.reduce((s,d)=>s+d.amt,0);
+  document.getElementById('pot-total').textContent=fmt(potTotal);
+  document.getElementById('pot-deposits-count').textContent=S.deposits.length+' deposit'+(S.deposits.length!==1?'s':'');
+  document.getElementById('pot-surplus').textContent=fmt(surplus);
+  document.getElementById('pot-rate').textContent=rate+'%';
+  const projInp=document.getElementById('proj-monthly');if(projInp&&!projInp.value)projInp.value=Math.round(surplus)||500;
+  const curInp=document.getElementById('proj-current');if(curInp&&!curInp.value)curInp.value=Math.round(potTotal)||0;
+  const hist=document.getElementById('deposit-history');
+  if(hist){
+    if(!S.deposits.length){hist.innerHTML='<div style="color:var(--t3);font-size:13px;text-align:center;padding:16px 0">No deposits yet — start saving!</div>';}
+    else{hist.innerHTML=[...S.deposits].reverse().map(d=>`
+      <div class="deposit-item">
+        <div class="deposit-icon">💰</div>
+        <div class="deposit-info"><div class="deposit-desc">${d.note}</div><div class="deposit-date">${d.date}</div></div>
+        <div class="deposit-amt">+${fmt(d.amt)}</div>
+        <button class="deposit-del" onclick="deleteDeposit('${d.id}')">×</button>
+      </div>`).join('');}
+  }
+  renderNetWorthPredictor();renderCatBars2();
+}
+function renderNetWorthPredictor(){
+  const monthly=parseFloat(document.getElementById('proj-monthly')?.value)||500;
+  const rate=parseFloat(document.getElementById('proj-rate')?.value)||6;
+  const current=parseFloat(document.getElementById('proj-current')?.value)||0;
+  const r=rate/100/12;
+  function fv(months){return r===0?current+monthly*months:current*Math.pow(1+r,months)+monthly*(Math.pow(1+r,months)-1)/r;}
+  [{id:'1y',m:12},{id:'3y',m:36},{id:'5y',m:60},{id:'10y',m:120},{id:'20y',m:240},{id:'30y',m:360}].forEach(p=>{
+    const val=fv(p.m),gain=val-current;
+    const el=document.getElementById('pred-'+p.id),del=document.getElementById('pred-'+p.id+'-d');
+    if(el)el.textContent=fmt(val);if(del)del.textContent='+'+fmt(gain)+' growth';
+  });
+  destroyChart('networthChart');
+  const labels=['Now'],vals=[current];
+  [1,2,3,5,10,15,20,25,30].forEach(y=>{vals.push(fv(y*12));labels.push(y+'y');});
+  const ctx=document.getElementById('networthChart');if(!ctx)return;
+  charts.networthChart=new Chart(ctx,{type:'line',
+    data:{labels,datasets:[{label:'Net Worth',data:vals,borderColor:'#6c4ef2',backgroundColor:'rgba(108,78,242,0.08)',tension:.4,fill:true,pointRadius:3,pointBackgroundColor:'#6c4ef2',borderWidth:2.5}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+fmt(c.parsed.y)}}},
+      scales:{x:{grid:{color:'rgba(0,0,0,.04)'},ticks:{color:'#9b98b8',font:{size:10}}},
+        y:{grid:{color:'rgba(0,0,0,.04)'},ticks:{color:'#9b98b8',font:{size:10},callback:v=>S.currency+(v>=1000?(v/1000).toFixed(0)+'K':v)}}}}
+  });
+}
+function renderCatBars2(){
+  const totals={};S.expenses.forEach(e=>{ totals[e.cat]=(totals[e.cat]||0)+e.amt; });
+  const el=document.getElementById('cat-bars2');if(!el)return;
+  el.innerHTML=CATS.map(c=>{
+    const sp=totals[c]||0,bud=S.budgets[c]||500,pct=Math.min(100,Math.round((sp/bud)*100));
+    return `<div class="cat-bar-item"><div class="cat-bar-top"><div class="cat-bar-name"><span style="font-size:15px">${CAT_EMOJI[c]}</span>${c}</div>
+      <div class="cat-bar-nums${sp>bud?' over':''}">${fmt(sp)}<span style="color:var(--t3);font-weight:400"> / ${fmt(bud)}</span></div></div>
+      <div class="cat-track"><div class="cat-fill" style="width:${pct}%;background:${sp>bud?'var(--red)':CAT_COLORS[c]}"></div></div></div>`;
+  }).join('');
+}
 function renderBreakdown(){
   destroyChart('bar');
   // Bar chart: income vs spending per month
@@ -1032,35 +1156,6 @@ function renderBreakdown(){
   }).join('') || '<div class="txn-empty">No expenses this month</div>';
 }
 
-function renderSavings(){
-  const total=S.expenses.reduce((s,e)=>s+e.amt,0);
-  const surplus=Math.max(0,S.income-total);
-  const rate=S.income?Math.max(0,Math.round((surplus/S.income)*100)):0;
-  document.getElementById('sv-surplus').textContent=fmt(surplus);
-  document.getElementById('sv-annual').textContent=fmt(surplus*12);
-  document.getElementById('sv-5yr').textContent=fmt(surplus*60);
-  document.getElementById('sv-income').textContent=fmt(S.income);
-  document.getElementById('sv-spent').textContent=fmt(total);
-  document.getElementById('sv-rate').textContent=rate+'%';
-  document.getElementById('sv-annual2').textContent=fmt(surplus*12);
-  document.getElementById('sv-5yr2').textContent=fmt(surplus*60);
-
-  const totals={};
-  S.expenses.forEach(e=>{ totals[e.cat]=(totals[e.cat]||0)+e.amt; });
-  const el=document.getElementById('cat-bars2');if(!el)return;
-  el.innerHTML=CATS.map(c=>{
-    const sp=totals[c]||0,bud=S.budgets[c]||500;
-    const pct=Math.min(100,Math.round((sp/bud)*100));
-    return `<div class="cat-bar-item">
-      <div class="cat-bar-top">
-        <div class="cat-bar-name"><span style="font-size:16px">${CAT_EMOJI[c]}</span>${c}</div>
-        <div class="cat-bar-nums${sp>bud?' over':''}">${fmt(sp)} / ${fmt(bud)}</div>
-      </div>
-      <div class="cat-track"><div class="cat-fill" style="width:${pct}%;background:${sp>bud?'var(--red)':CAT_COLORS[c]}"></div></div>
-    </div>`;
-  }).join('');
-}
-
 /* ── BOOT ───────────────────────────── */
 (async function boot(){
   // Check OAuth callback
@@ -1071,7 +1166,7 @@ function renderSavings(){
   // Load saved config
   try{
     const conf=JSON.parse(localStorage.getItem(CONF_KEY)||'{}');
-    if(conf.sheetId){Object.assign(S,conf);if(conf.budgets)S.budgets=conf.budgets;}
+    if(conf.sheetId){Object.assign(S,conf);if(conf.budgets)S.budgets=conf.budgets;if(conf.deposits)S.deposits=conf.deposits;}
   }catch(e){}
   // Check saved token
   if(!S.isDemo&&S.sheetId&&loadToken()){
