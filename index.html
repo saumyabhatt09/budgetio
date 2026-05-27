@@ -974,6 +974,10 @@ async function deleteExpense(id){
   else toast('Deleted');
 }
 
+/* ── CHARTS ─────────────────────────── */
+let charts={};
+function destroyChart(key){if(charts[key]){charts[key].destroy();charts[key]=null;}}
+
 /* ── RENDER ALL ─────────────────────── */
 function renderAll(){renderBudgetRing();renderHomeCats();renderTxnBody('txn-body');renderTxnBody('txn-body2');renderBreakdown();renderSavings();}
 
